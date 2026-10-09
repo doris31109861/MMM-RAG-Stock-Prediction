@@ -1,0 +1,44 @@
+# ============================================================
+# MMM-RAG（財經/股市多模態版）所需 Python 套件
+#
+# 重要：torch / torchvision / torchaudio 「不要」用這份檔案安裝！
+# RTX 5060 是 Blackwell 架構（CUDA compute capability sm_120），
+# 需要專用的 CUDA 12.8 對應版本，用一般 `pip install torch` 抓到的
+# 版本很可能不支援你的顯卡（會出現 "no kernel image is available"
+# 這種錯誤）。請務必先看 README.md「步驟 2」，用官方指定的
+# --index-url 指令單獨安裝 torch 全家桶，安裝完成、確認
+# torch.cuda.is_available() 是 True 之後，再回來執行：
+#
+#   pip install -r requirements.txt
+#
+# ============================================================
+
+# ---- Hugging Face 生態系（模型推論核心）----
+transformers>=4.46,<5.0
+accelerate>=1.2
+bitsandbytes>=0.45          # 4-bit 量化，讓 LLM/VLM 塞得進 8GB VRAM
+sentencepiece>=0.2
+safetensors>=0.4
+einops>=0.8
+qwen-vl-utils>=0.0.8        # Qwen2-VL 影像前處理工具
+
+# ---- Embedding / 向量檢索 ----
+sentence-transformers>=3.3
+faiss-cpu>=1.9              # 向量資料庫（CPU 版即可，資料量小、檢索很快）
+
+# ---- 知識圖譜（語義庫的 graph-based retrieval，忠實對應論文的 LlamaIndex KnowledgeGraphIndex）----
+llama-index>=0.11
+
+# ---- 資料集下載與處理 ----
+datasets>=3.2
+huggingface_hub>=0.27
+pillow>=11.0
+pandas>=2.2
+pyarrow>=18.0
+
+# ---- 網路檢索 Agent（對應論文的 Web-based retrieval）----
+ddgs>=8.1                   # 原名 duckduckgo_search，已改名為 ddgs
+
+# ---- 其他工具 ----
+tqdm>=4.67
+python-dotenv>=1.0
