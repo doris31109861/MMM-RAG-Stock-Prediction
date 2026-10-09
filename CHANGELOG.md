@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-09 — README 註明以 AI 協助
+
+- **內容**：README 開頭加上說明：2026/10 的整理、測試與改進是以 AI（Claude）協助完成，逐項紀錄見本檔。
+- **原因**：讓看 repo 的人清楚知道哪些部分是後來以 AI 協助完成的，與原本的作業區分。
+- **測試**：只改文件。
+
 ## 2026-10-09 — 新增 FinMME 評估與消融實驗腳本
 
 - **內容**：新增 `mmm_rag/evaluation.py`（題目格式化、選項／數值解析、判分、統計，純 Python）與 `scripts/05_evaluate.py`：取知識庫之後的 FinMME 題目（避免資料洩漏），以 `vlm_only`、`visual`、`semantic`、`web`、`full` 五種模式作答並計算各題型準確率，輸出 `results/eval_<mode>.jsonl` 與 `results/summary.md`。新增 `tests/test_evaluation.py`。README 加上評估說明。
