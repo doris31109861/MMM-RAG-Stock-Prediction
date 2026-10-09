@@ -85,14 +85,31 @@ python main.py --question "分析師解讀股價走勢圖時會關注哪些訊�
 
 每次查詢的完整中間過程（子任務、三個候選答案、分數與權重）會存到 `logs/run_<timestamp>.json`。
 
-不需要 GPU 的邏輯測試：`python tests/smoke_test.py`
+不需要 GPU 的邏輯測試：`python tests/smoke_test.py`、`python tests/test_evaluation.py`
 
 詳細的逐步安裝說明與 VRAM 調校 FAQ 請見 [`docs/setup-guide-zh.md`](docs/setup-guide-zh.md)。
 
 ### 結果
 
 - 系統設計為可在單張 RTX 5060 8GB 上執行（300 筆建庫預估約 10–25 分鐘）。
-- 論文的量化結果是在 ScienceQA 與 CrisisMMD 上以 Accuracy 評估；本專案改用 FinMME 且換成小模型，**尚未做與論文可直接比較的量化評估**，這是下一步的工作。
+- 論文的量化結果是在 ScienceQA 與 CrisisMMD 上以 Accuracy 評估；本專案改用 FinMME 且換成小模型，數字無法直接與論文比較。
+
+**評估方式**（`scripts/05_evaluate.py`）：取知識庫之後、沒有被建進資料庫的 FinMME 題目（避免資料洩漏），把題目附的圖表當成查詢圖片，比較五種設定：
+
+| 模式 | 說明 |
+|---|---|
+| `vlm_only` | 不檢索，VLM 直接看圖作答（baseline） |
+| `visual` / `semantic` / `web` | 只用單一路檢索（消融實驗） |
+| `full` | 完整 MMM-RAG：任務拆解＋三路檢索＋共識投票 |
+
+判分：單選比對字母、多選需完全相同、數值題依資料集的 tolerance（沒有時用 1% 相對誤差），邏輯有單元測試。
+
+```bash
+python scripts/05_evaluate.py --n 100 --mode vlm_only visual semantic web full
+# 逐題紀錄：results/eval_<mode>.jsonl；比較表：results/summary.md
+```
+
+> 評估需要 GPU，尚未執行；跑完後會把 `results/summary.md` 的表格放在這裡。
 
 ### 專案結構
 
@@ -151,11 +168,14 @@ python scripts/01_setup_check.py && python scripts/02_download_dataset.py
 python scripts/03_build_knowledge_base.py && python scripts/04_build_graph_index.py
 python main.py --sample            # or --question "..." [--image chart.png]
 python tests/smoke_test.py         # logic test, no GPU needed
+python scripts/05_evaluate.py --n 100 --mode vlm_only visual semantic web full   # evaluation (GPU)
 ```
 
 ### Results
 
-The system is designed to run on a single RTX 5060 8 GB (indexing 300 samples is estimated at 10–25 minutes). The paper reports accuracy on ScienceQA and CrisisMMD; this project uses FinMME and smaller models, so **no directly comparable quantitative evaluation has been done yet**.
+The system is designed to run on a single RTX 5060 8 GB (indexing 300 samples is estimated at 10–25 minutes). The paper reports accuracy on ScienceQA and CrisisMMD; this project uses FinMME and smaller models, so the numbers are not directly comparable.
+
+`scripts/05_evaluate.py` evaluates on held-out FinMME questions (not in the knowledge base) and compares a no-retrieval VLM baseline, each single retrieval route and the full pipeline. Single-choice, multiple-choice (exact set) and numerical (dataset tolerance) questions are scored automatically. The evaluation needs a GPU and has not been run yet.
 
 ### What I learned
 

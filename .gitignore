@@ -216,3 +216,4 @@ db/*.faiss
 db/*.pkl
 db/knowledge_graph_index/
 logs/*.json
+data/eval_images/
