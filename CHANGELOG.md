@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-09 — repo 改名為 mmm-rag-finance
+
+- **內容**：GitHub repo 由 `MMM-RAG-Stock-Prediction` 改名為 `mmm-rag-finance`（舊網址會自動轉址）。
+- **原因**：本專案做的是財經圖表問答（FinMME），並沒有預測股價，舊名稱容易讓人誤會。
+- **測試**：確認舊網址轉址到新網址。
+
 ## 2026-10-09 — 上傳完整實作程式碼
 
 - **內容**：加入 MMM-RAG 完整實作（`mmm_rag/` 三個 Agent、向量庫、知識圖譜、模型管理；`scripts/01–04`；`main.py`；`config.py`）、`requirements.txt`、`.env.example`、中英雙語 README（含 Mermaid 架構圖、論文對照表）、`docs/setup-guide-zh.md`（原本的詳細安裝說明）、`tests/smoke_test.py`。
